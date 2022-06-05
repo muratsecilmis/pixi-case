@@ -40,12 +40,22 @@ for (let i = 0; i < 4; i++) {
 
 
 app.view.addEventListener('mousewheel', (ev) => {
-    if (ev.wheelDelta < 0) {
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+  
+    // returns element directly under mouse
+    const found = app.renderer.plugins.interaction.hitTest(
+        mousePosition,
+        app.stage
+    );
+    
+    // Dispatch scroll event
+    if (found) { found.emit('scroll', ev); }
+    if (ev.wheelDelta < 0 && found) {
         container.setTransform(container.x, container.y, scaleX, scaleY);
         scaleX *= 1.01;
         scaleY *= 1.01;
     }
-    else if (ev.wheelDelta >= 0) {
+    else if (ev.wheelDelta >= 0 && found) {
         container.setTransform(container.x, container.y, scaleX, scaleY);
         scaleX /= 1.01;
         scaleY /= 1.01;
