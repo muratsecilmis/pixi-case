@@ -9,11 +9,6 @@ const container = new PIXI.Container();
 
 container.interactive = true;
 container.buttonMode = true;
-container
-    .on('pointerdown', onDragStart)
-    .on('pointerup', onDragEnd)
-    .on('pointerupoutside', onDragEnd)
-    .on('pointermove', onDragMove);
 
 const rectangleArray = [];
 const groupColumn = [];
@@ -25,8 +20,7 @@ let scaleX = 1, scaleY = 1;
 
 
 for (let i = 0; i < 18; i++) {
-    var graphics = new PIXI.Graphics();
-    rectangleArray[i] = graphics;
+    rectangleArray[i] = new PIXI.Graphics();
 }
 for (let i = 0; i < 4; i++) {
     groupColumn[i] = new PIXI.Container();
@@ -41,15 +35,12 @@ for (let i = 0; i < 4; i++) {
 
 app.view.addEventListener('mousewheel', (ev) => {
     app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
-  
-    // returns element directly under mouse
+
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
         app.stage
     );
-    
-    // Dispatch scroll event
-    if (found) { found.emit('scroll', ev); }
+
     if (ev.wheelDelta < 0 && found) {
         container.setTransform(container.x, container.y, scaleX, scaleY);
         scaleX *= 1.01;
@@ -63,95 +54,95 @@ app.view.addEventListener('mousewheel', (ev) => {
 });
 
 app.view.addEventListener('mousedown', (ev) => {
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+
+    const found = app.renderer.plugins.interaction.hitTest(
+        mousePosition,
+        app.stage
+    );
+   if(found)
+   {
     tempMouseX = ev.x;
     tempMouseY = ev.y;
     mouseDrag = true;
+   }
 });
 
 app.view.addEventListener('mouseup', (ev) => {
     mouseDrag = false;
-
 });
 
+let secondTempX = 0;
+let secondTempY = 0;
+
 app.view.addEventListener('mousemove', (ev) => {
-    if (mouseDrag) {
-        container.x += ev.x - tempMouseX
-        container.y += ev.y - tempMouseY;
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+
+    const found = app.renderer.plugins.interaction.hitTest(
+        mousePosition,
+        app.stage
+    );
+
+    if (mouseDrag && found) {
+
+        container.x += ev.x - tempMouseX - secondTempX;
+        container.y += ev.y - tempMouseY - secondTempY;
+        secondTempX = ev.x - tempMouseX;
+        secondTempY = ev.y - tempMouseY;
+
+        console.log(ev.x + " " + ev.y + "ev.x y");
+        console.log(tempMouseX + " " + tempMouseY + " tempMouse");
+        console.log(container.x, container.y + " container");
     }
 });
 
-function onPointerOver(object, t) {
+
+function onPointerOver(object, column) {
     object.tint = 0x50d13f;
-    object.alpha = 0.3; 
-    if (t === groupColumn[0]) {
+    object.alpha = 0.3;
+    if (column === groupColumn[0]) {
         columnID = 1;
         line[0].visible = true;
     }
-    else if (t === groupColumn[1]) {
+    else if (column === groupColumn[1]) {
         columnID = 2;
         line[1].visible = true;
     }
-    else if (t === groupColumn[2]) {
+    else if (column === groupColumn[2]) {
         columnID = 3;
         line[2].visible = true;
 
-    } else if (t === groupColumn[3]) {
+    } else if (column === groupColumn[3]) {
         columnID = 4;
         line[3].visible = true;
     }
 }
 
-function onPointerOut(object, t) {
+function onPointerOut(object, column) {
     object.tint = 0xffffff;
     object.alpha = 1;
-    if (t === groupColumn[0]) {
+    if (column === groupColumn[0]) {
         line[0].visible = false;
     }
-    else if (t === groupColumn[1]) {
+    else if (column === groupColumn[1]) {
         line[1].visible = false;
     }
-    else if (t === groupColumn[2]) {
+    else if (column === groupColumn[2]) {
         line[2].visible = false;
 
     }
-    else if (t === groupColumn[3]) {
+    else if (column === groupColumn[3]) {
         line[3].visible = false;
     }
-}
+} 
 
-function onClick(object) {
-    object.alpha = 0.5;
-}
-
-
-function onDragStart(event) {
-    this.data = event.data;
-    this.dragging = true;
-}
-
-function onDragEnd() {
-    this.dragging = false;
-    this.data = null;
-}
-
-function onDragMove() {
-    if (this.dragging) {
-        const newPosition = this.data.getLocalPosition(this.parent);
-        this.x = mousePosition.x;
-        this.y = mousePosition.y;
-    }
-}
 
 function createRectangle(cX, cY, cWidth, cHeight, tint, rectangleArray, groupColumn) {
     rectangleArray.beginFill(tint);
     rectangleArray.lineStyle(2, 0x000000);
     rectangleArray.drawRect(cX, cY, cWidth, cHeight);
     rectangleArray.interactive = true;
-
-    rectangleArray.on('pointerdown', (event) => {
-        onClick(rectangleArray)
-    });
-
+ 
     rectangleArray.on('pointerover', (event) => {
         onPointerOver(rectangleArray, groupColumn)
     });
