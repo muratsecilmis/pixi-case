@@ -13,10 +13,8 @@ container.buttonMode = true;
 const rectangleArray = [];
 const groupColumn = [];
 const line = [];
-let tempLastMouseX, tempLastMouseY;
-let tempFirstTempX = 0;
-let tempFirstTempY = 0;
-
+let tempFirstMouseY;
+let tempFirstMouseX;
 let mouseDrag = false;
 let columnID;
 let scaleX = 1, scaleY = 1;
@@ -38,7 +36,6 @@ for (let i = 0; i < 4; i++) {
 
 app.view.addEventListener('mousewheel', (ev) => {
     app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); 
-
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
         app.stage
@@ -58,15 +55,14 @@ app.view.addEventListener('mousewheel', (ev) => {
 
 app.view.addEventListener('mousedown', (ev) => {
     app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y);  
-
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
         app.stage
     );
    if(found)
    {
-    tempLastMouseX = ev.x;
-    tempLastMouseY = ev.y;
+    tempFirstMouseX = ev.x - container.x;
+    tempFirstMouseY = ev.y - container.y;
     mouseDrag = true;
    }
 });
@@ -85,24 +81,8 @@ app.view.addEventListener('mousemove', (ev) => {
     );
 
     if (mouseDrag && found) {
-
-        if(ev.x == tempLastMouseX && ev.y == tempLastMouseY)
-        {
-
-        }
-        else
-        {
-        
-        console.log(container.x + " -->> old");
-            
-        container.x += ev.x - tempLastMouseX - tempFirstTempX;
-        container.y += ev.y - tempLastMouseY - tempFirstTempY;
-        tempFirstTempX = ev.x - tempLastMouseX;
-        tempFirstTempY = ev.y - tempLastMouseY;
-    
-        console.log("container.x += ev.x - tempLastMouseX - tempFirstTempX");
-        console.log(container.x + " += " + ev.x + " - " + tempLastMouseX + " - " + tempFirstTempX);
-        } 
+        container.x = ev.x - tempFirstMouseX;  
+        container.y = ev.y - tempFirstMouseY; 
     }
 });
 
@@ -147,10 +127,10 @@ function onPointerOut(object, column) {
 } 
 
 
-function createRectangle(cX, cY, cWidth, cHeight, tint, rectangleArray, groupColumn) {
+function createRectangle(rX, rY, rWidth, rHeight, tint, rectangleArray, groupColumn) {
     rectangleArray.beginFill(tint);
     rectangleArray.lineStyle(2, 0x000000);
-    rectangleArray.drawRect(cX, cY, cWidth, cHeight);
+    rectangleArray.drawRect(rX, rY, rWidth, rHeight);
     rectangleArray.interactive = true;
  
     rectangleArray.on('pointerover', (event) => {
