@@ -13,7 +13,10 @@ container.buttonMode = true;
 const rectangleArray = [];
 const groupColumn = [];
 const line = [];
-let tempMouseX, tempMouseY;
+let tempLastMouseX, tempLastMouseY;
+let tempFirstTempX = 0;
+let tempFirstTempY = 0;
+
 let mouseDrag = false;
 let columnID;
 let scaleX = 1, scaleY = 1;
@@ -62,8 +65,8 @@ app.view.addEventListener('mousedown', (ev) => {
     );
    if(found)
    {
-    tempMouseX = ev.x;
-    tempMouseY = ev.y;
+    tempLastMouseX = ev.x;
+    tempLastMouseY = ev.y;
     mouseDrag = true;
    }
 });
@@ -72,8 +75,6 @@ app.view.addEventListener('mouseup', (ev) => {
     mouseDrag = false;
 });
 
-let secondTempX = 0;
-let secondTempY = 0;
 
 app.view.addEventListener('mousemove', (ev) => {
     app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
@@ -85,13 +86,13 @@ app.view.addEventListener('mousemove', (ev) => {
 
     if (mouseDrag && found) {
 
-        container.x += ev.x - tempMouseX - secondTempX;
-        container.y += ev.y - tempMouseY - secondTempY;
-        secondTempX = ev.x - tempMouseX;
-        secondTempY = ev.y - tempMouseY;
+        container.x += ev.x - tempLastMouseX - tempFirstTempX;
+        container.y += ev.y - tempLastMouseY - tempFirstTempY;
+        tempFirstTempX = ev.x - tempLastMouseX;
+        tempFirstTempY = ev.y - tempLastMouseY;
 
         console.log(ev.x + " " + ev.y + "ev.x y");
-        console.log(tempMouseX + " " + tempMouseY + " tempMouse");
+        console.log(tempLastMouseX + " " + tempLastMouseY + " tempMouse");
         console.log(container.x, container.y + " container");
     }
 });
@@ -153,7 +154,7 @@ function createRectangle(cX, cY, cWidth, cHeight, tint, rectangleArray, groupCol
     groupColumn.addChild(rectangleArray);
 }
 
-function linePlotter(line, groupSprite, firstLineMoveX, firstLineMoveY, firstLineStartX, firstLineStartY, firstLineEndX, firstLineEndY, secondLineMoveX, secondLineMoveY, secondLineStartX, secondLineStartY, secondLineEndX, secondLineEndY) {
+function linePlotter(line, groupColumn, firstLineMoveX, firstLineMoveY, firstLineStartX, firstLineStartY, firstLineEndX, firstLineEndY, secondLineMoveX, secondLineMoveY, secondLineStartX, secondLineStartY, secondLineEndX, secondLineEndY) {
     line.lineStyle(2, 0x00ff00)
         .moveTo(firstLineMoveX, firstLineMoveY)
         .lineTo(firstLineStartX, firstLineStartY)
@@ -163,7 +164,7 @@ function linePlotter(line, groupSprite, firstLineMoveX, firstLineMoveY, firstLin
         .lineTo(secondLineStartX, secondLineStartY)
         .lineTo(secondLineEndX, secondLineEndY);
     line.visible = false;
-    groupSprite.addChild(line);
+    groupColumn.addChild(line);
 }
 
 
