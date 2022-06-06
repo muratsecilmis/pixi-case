@@ -86,14 +86,28 @@ app.view.addEventListener('mousemove', (ev) => {
 
     if (mouseDrag && found) {
 
+        if(ev.x == tempLastMouseX && ev.y == tempLastMouseY)
+        {
+
+        }
+        else
+        {
+        
+        console.log(container.x + " -->> old");
+            
         container.x += ev.x - tempLastMouseX - tempFirstTempX;
         container.y += ev.y - tempLastMouseY - tempFirstTempY;
         tempFirstTempX = ev.x - tempLastMouseX;
         tempFirstTempY = ev.y - tempLastMouseY;
-
-        console.log(ev.x + " " + ev.y + "ev.x y");
-        console.log(tempLastMouseX + " " + tempLastMouseY + " tempMouse");
-        console.log(container.x, container.y + " container");
+    
+        console.log("container.x += ev.x - tempLastMouseX - tempFirstTempX");
+        console.log(container.x + " += " + ev.x + " - " + tempLastMouseX + " - " + tempFirstTempX);
+        }
+        
+        // console.log(ev.x + " " + ev.y + "ev.x y");
+        // console.log(tempLastMouseX + " " + tempLastMouseY + " Last tempMouse");
+        // console.log(tempFirstTempX + " " + tempFirstTempX + " First tempMouse");
+        // console.log(container.x, container.y + " container");
     }
 });
 
