@@ -37,7 +37,7 @@ for (let i = 0; i < 4; i++) {
 
 
 app.view.addEventListener('mousewheel', (ev) => {
-    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); 
 
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
@@ -57,7 +57,7 @@ app.view.addEventListener('mousewheel', (ev) => {
 });
 
 app.view.addEventListener('mousedown', (ev) => {
-    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y);  
 
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
@@ -77,7 +77,7 @@ app.view.addEventListener('mouseup', (ev) => {
 
 
 app.view.addEventListener('mousemove', (ev) => {
-    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y); // get global position in world coordinates
+    app.renderer.plugins.interaction.mapPositionToPoint(mousePosition, ev.x, ev.y);  
 
     const found = app.renderer.plugins.interaction.hitTest(
         mousePosition,
@@ -102,12 +102,7 @@ app.view.addEventListener('mousemove', (ev) => {
     
         console.log("container.x += ev.x - tempLastMouseX - tempFirstTempX");
         console.log(container.x + " += " + ev.x + " - " + tempLastMouseX + " - " + tempFirstTempX);
-        }
-        
-        // console.log(ev.x + " " + ev.y + "ev.x y");
-        // console.log(tempLastMouseX + " " + tempLastMouseY + " Last tempMouse");
-        // console.log(tempFirstTempX + " " + tempFirstTempX + " First tempMouse");
-        // console.log(container.x, container.y + " container");
+        } 
     }
 });
 
